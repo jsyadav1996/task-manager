@@ -2,7 +2,7 @@ version: '3'
 
 services:
   backend:
-    build: ./backend
+    image: ./backend
     container_name: backend
     expose:
       - "5000"  # Internal API port

@@ -1,0 +1,33 @@
+stages:
+  - build
+  - push
+
+variables:
+  REGISTRY: registry.gitlab.com
+  IMAGE_BACKEND: $REGISTRY/$CI_PROJECT_PATH/backend
+  IMAGE_FRONTEND: $REGISTRY/$CI_PROJECT_PATH/frontend
+
+before_script:
+  - echo "$CI_JOB_TOKEN" | docker login -u gitlab-ci-token --password-stdin $REGISTRY
+
+build_backend:
+  stage: build
+  script:
+    - docker build -t $IMAGE_BACKEND:latest ./backend
+
+build_frontend:
+  stage: build
+  script:
+    - docker build -t $IMAGE_FRONTEND:latest ./frontend
+
+push_backend:
+  stage: push
+  script:
+    - docker push $IMAGE_BACKEND:latest
+  needs: [build_backend]
+
+push_frontend:
+  stage: push
+  script:
+    - docker push $IMAGE_FRONTEND:latest
+  needs: [build_frontend]
